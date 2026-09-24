@@ -1,0 +1,873 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Make Section Entry</title>
+
+  <style>
+    :root{
+      --bg:#f5f7fb;
+      --card:#ffffff;
+      --text:#172033;
+      --muted:#6b7280;
+      --line:#d9dee8;
+      --primary:#2563eb;
+      --primary-dark:#1d4ed8;
+      --success:#15803d;
+      --danger:#b91c1c;
+      --shadow:0 10px 30px rgba(20, 33, 61, .08);
+      --radius:16px;
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family:Arial, Helvetica, sans-serif;
+    }
+
+    .app{
+      max-width:1150px;
+      margin:0 auto;
+      padding:20px;
+    }
+
+    .topbar{
+      background:var(--card);
+      box-shadow:var(--shadow);
+      border-radius:var(--radius);
+      padding:16px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:18px;
+      position:sticky;
+      top:10px;
+      z-index:20;
+    }
+
+    .brand{
+      font-weight:800;
+      font-size:20px;
+      white-space:nowrap;
+    }
+
+    .nav{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+
+    button{
+      border:0;
+      border-radius:11px;
+      padding:11px 15px;
+      font-weight:700;
+      cursor:pointer;
+      background:#e9edf5;
+      color:var(--text);
+    }
+
+    button.primary{
+      background:var(--primary);
+      color:#fff;
+    }
+
+    button.primary:hover{background:var(--primary-dark)}
+    button:disabled{opacity:.55; cursor:not-allowed}
+
+    .page{display:none}
+    .page.active{display:block}
+
+    .hero{
+      margin-bottom:14px;
+    }
+
+    .hero h1{
+      margin:0 0 6px;
+      font-size:28px;
+    }
+
+    .hero p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.5;
+    }
+
+    .card{
+      background:var(--card);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:18px;
+      margin-bottom:16px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(4, minmax(0, 1fr));
+      gap:14px;
+    }
+
+    .field label{
+      display:block;
+      font-size:12px;
+      font-weight:800;
+      margin-bottom:7px;
+      color:#334155;
+      text-transform:uppercase;
+      letter-spacing:.03em;
+    }
+
+    select, input{
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:10px;
+      padding:11px 12px;
+      background:#fff;
+      color:var(--text);
+      font-size:14px;
+      outline:none;
+    }
+
+    select:focus, input:focus{
+      border-color:var(--primary);
+      box-shadow:0 0 0 3px rgba(37,99,235,.12);
+    }
+
+    .summary{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:10px;
+    }
+
+    .count{
+      font-weight:800;
+      font-size:18px;
+    }
+
+    .meta{
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .size-list{
+      display:grid;
+      gap:10px;
+    }
+
+    .size-row{
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:12px;
+      display:grid;
+      grid-template-columns:110px 1fr 190px;
+      gap:12px;
+      align-items:center;
+    }
+
+    .size-pill{
+      display:inline-flex;
+      justify-content:center;
+      align-items:center;
+      min-height:40px;
+      border-radius:10px;
+      background:#eef4ff;
+      color:#1d4ed8;
+      font-weight:800;
+      padding:8px 10px;
+    }
+
+    .order-ref{
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .actions{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:14px;
+    }
+
+    .status{
+      min-height:24px;
+      margin-top:8px;
+      font-size:13px;
+      color:var(--muted);
+    }
+
+    .status.success{color:var(--success); font-weight:700}
+    .status.error{color:var(--danger); font-weight:700}
+
+    .table-wrap{
+      overflow:auto;
+      border:1px solid var(--line);
+      border-radius:12px;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      min-width:900px;
+    }
+
+    th, td{
+      padding:9px 10px;
+      border-bottom:1px solid var(--line);
+      text-align:left;
+      white-space:nowrap;
+      font-size:13px;
+    }
+
+    th{
+      background:#f8fafc;
+      font-weight:800;
+      position:sticky;
+      top:0;
+      z-index:1;
+    }
+
+    .empty{
+      padding:25px;
+      text-align:center;
+      color:var(--muted);
+    }
+
+    .small-note{
+      margin-top:8px;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.45;
+    }
+
+    @media (max-width:900px){
+      .grid{grid-template-columns:repeat(2, minmax(0, 1fr))}
+      .size-row{grid-template-columns:90px 1fr 150px}
+    }
+
+    @media (max-width:600px){
+      .app{padding:12px}
+      .topbar{position:static; align-items:flex-start; flex-direction:column}
+      .grid{grid-template-columns:1fr}
+      .size-row{grid-template-columns:1fr}
+      .hero h1{font-size:23px}
+    }
+  </style>
+</head>
+<body>
+
+<div class="app">
+
+  <div class="topbar">
+    <div class="brand">Make Section Entry</div>
+    <div class="nav">
+      <button id="btnNew" onclick="showPage('new')">New Entry</button>
+      <button id="btnEntries" onclick="showPage('entries')">Submitted Entries</button>
+    </div>
+  </div>
+
+  <!-- PAGE 1 -->
+  <section id="pageNew" class="page active">
+    <div class="hero">
+      <h1>New Input</h1>
+      <p>
+        Select Floor &amp; Line → Buyer → Style → Color.
+        The available sizes will then appear automatically.
+      </p>
+    </div>
+
+    <div class="card">
+      <div class="grid">
+
+        <div class="field">
+          <label for="floorLine">Floor &amp; Line</label>
+          <select id="floorLine" onchange="loadBuyers()">
+            <option value="">Loading...</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="buyer">Buyer</label>
+          <select id="buyer" onchange="loadStyles()" disabled>
+            <option value="">Select Floor &amp; Line first</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="style">Style</label>
+          <select id="style" onchange="loadColors()" disabled>
+            <option value="">Select Buyer first</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="color">Color</label>
+          <select id="color" onchange="loadSizes()" disabled>
+            <option value="">Select Style first</option>
+          </select>
+        </div>
+
+      </div>
+
+      <div class="small-note">
+        The first three dropdowns use columns F, G and H from
+        <b>Layout Entries</b>. Color uses column I and sizes use column J.
+      </div>
+
+      <div id="selectionStatus" class="status"></div>
+    </div>
+
+    <div class="card">
+      <div class="summary">
+        <div class="count" id="sizeCount">0 sizes</div>
+        <div class="meta" id="sizeMeta">Choose Color to load sizes.</div>
+      </div>
+
+      <div id="sizeList" class="size-list">
+        <div class="empty">No sizes loaded yet.</div>
+      </div>
+
+      <div class="actions">
+        <button id="submitBtn" class="primary" onclick="submitRows()" disabled>
+          Submit to Input
+        </button>
+        <button onclick="resetForm()">Reset</button>
+      </div>
+
+      <div id="submitStatus" class="status"></div>
+    </div>
+  </section>
+
+  <!-- PAGE 2 -->
+  <section id="pageEntries" class="page">
+    <div class="hero">
+      <h1>Submitted Entries</h1>
+      <p>Latest rows currently stored in the <b>Input</b> sheet.</p>
+    </div>
+
+    <div class="card">
+      <div class="actions" style="margin-top:0;margin-bottom:12px">
+        <button class="primary" onclick="loadRecentEntries()">Refresh</button>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>SL</th>
+              <th>Date</th>
+              <th>Area</th>
+              <th>Floor</th>
+              <th>Line</th>
+              <th>Buyer</th>
+              <th>Style</th>
+              <th>Color</th>
+              <th>Size</th>
+              <th>Quantity</th>
+            </tr>
+          </thead>
+          <tbody id="entryBody"></tbody>
+        </table>
+      </div>
+
+      <div id="entryStatus" class="status"></div>
+    </div>
+  </section>
+
+</div>
+
+<!-- Hidden iframe for cross-origin POST -->
+<iframe name="submitFrame" id="submitFrame" style="display:none"></iframe>
+
+<script>
+  /****************************************************************
+   * IMPORTANT:
+   * 1) Deploy Code.gs as a Web App.
+   * 2) Copy the /exec URL.
+   * 3) Paste it below.
+   ****************************************************************/
+  const SCRIPT_URL = 'PASTE_APPS_SCRIPT_WEB_APP_URL_HERE';
+
+  const state = {
+    sizes: []
+  };
+
+  function todayISO() {
+    const d = new Date();
+    const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
+    return local.toISOString().slice(0, 10);
+  }
+
+  function showPage(page) {
+    const newPage = document.getElementById('pageNew');
+    const entriesPage = document.getElementById('pageEntries');
+
+    newPage.classList.toggle('active', page === 'new');
+    entriesPage.classList.toggle('active', page === 'entries');
+
+    document.getElementById('btnNew').classList.toggle('primary', page === 'new');
+    document.getElementById('btnEntries').classList.toggle('primary', page === 'entries');
+
+    if (page === 'entries') {
+      loadRecentEntries();
+    }
+  }
+
+  function clearSelect(id, label) {
+    const el = document.getElementById(id);
+    el.innerHTML = '';
+    const opt = document.createElement('option');
+    opt.value = '';
+    opt.textContent = label;
+    el.appendChild(opt);
+    return el;
+  }
+
+  function fillSelect(id, items, placeholder) {
+    const el = clearSelect(id, placeholder);
+
+    (items || []).forEach(item => {
+      const value = typeof item === 'object'
+        ? (item.value ?? item.name ?? item.text ?? '')
+        : item;
+
+      if (value === '') return;
+
+      const opt = document.createElement('option');
+      opt.value = value;
+      opt.textContent = value;
+      el.appendChild(opt);
+    });
+
+    return el;
+  }
+
+  function setDisabled(id, disabled) {
+    document.getElementById(id).disabled = disabled;
+  }
+
+  function setStatus(id, text, type) {
+    const el = document.getElementById(id);
+    el.textContent = text || '';
+    el.className = 'status' + (type ? ' ' + type : '');
+  }
+
+  function jsonp(action, params = {}) {
+    return new Promise((resolve, reject) => {
+      if (!SCRIPT_URL || SCRIPT_URL.includes('PASTE_APPS_SCRIPT')) {
+        reject(new Error('Please set SCRIPT_URL in index.html.'));
+        return;
+      }
+
+      const cbName = '__gs_cb_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
+
+      const script = document.createElement('script');
+
+      const query = new URLSearchParams({
+        action,
+        callback: cbName,
+        ...params
+      });
+
+      const timer = setTimeout(() => {
+        cleanup();
+        reject(new Error('Request timed out.'));
+      }, 20000);
+
+      function cleanup() {
+        clearTimeout(timer);
+        script.remove();
+        try { delete window[cbName]; } catch (_) {}
+      }
+
+      window[cbName] = (data) => {
+        cleanup();
+        if (data && data.ok === false) {
+          reject(new Error(data.error || 'Backend error'));
+        } else {
+          resolve(data);
+        }
+      };
+
+      script.onerror = () => {
+        cleanup();
+        reject(new Error('Could not connect to Apps Script.'));
+      };
+
+      script.src = SCRIPT_URL + (SCRIPT_URL.includes('?') ? '&' : '?') + query.toString();
+      document.body.appendChild(script);
+    });
+  }
+
+  async function init() {
+    try {
+      const data = await jsonp('floorLines');
+      fillSelect('floorLine', data.items, 'Select Floor & Line');
+      setDisabled('floorLine', false);
+      setStatus('selectionStatus', 'Ready.');
+    } catch (err) {
+      setStatus('selectionStatus', err.message, 'error');
+      clearSelect('floorLine', 'Backend not connected');
+    }
+  }
+
+  async function loadBuyers() {
+    const floorLine = document.getElementById('floorLine').value;
+
+    state.sizes = [];
+    renderSizes();
+
+    fillSelect('buyer', [], 'Loading buyers...');
+    fillSelect('style', [], 'Select Buyer first');
+    fillSelect('color', [], 'Select Style first');
+
+    setDisabled('buyer', true);
+    setDisabled('style', true);
+    setDisabled('color', true);
+    document.getElementById('submitBtn').disabled = true;
+
+    if (!floorLine) return;
+
+    try {
+      const data = await jsonp('buyers', { floorLine });
+      fillSelect('buyer', data.items, 'Select Buyer');
+      setDisabled('buyer', false);
+
+      setStatus(
+        'selectionStatus',
+        (data.items || []).length + ' buyer(s) found for ' + floorLine
+      );
+    } catch (err) {
+      setStatus('selectionStatus', err.message, 'error');
+    }
+  }
+
+  async function loadStyles() {
+    const floorLine = document.getElementById('floorLine').value;
+    const buyer = document.getElementById('buyer').value;
+
+    state.sizes = [];
+    renderSizes();
+
+    fillSelect('style', [], 'Loading styles...');
+    fillSelect('color', [], 'Select Style first');
+
+    setDisabled('style', true);
+    setDisabled('color', true);
+    document.getElementById('submitBtn').disabled = true;
+
+    if (!floorLine || !buyer) return;
+
+    try {
+      const data = await jsonp('styles', { floorLine, buyer });
+      fillSelect('style', data.items, 'Select Style');
+      setDisabled('style', false);
+
+      setStatus('selectionStatus', (data.items || []).length + ' style(s) found.');
+    } catch (err) {
+      setStatus('selectionStatus', err.message, 'error');
+    }
+  }
+
+  async function loadColors() {
+    const floorLine = document.getElementById('floorLine').value;
+    const buyer = document.getElementById('buyer').value;
+    const style = document.getElementById('style').value;
+
+    state.sizes = [];
+    renderSizes();
+
+    fillSelect('color', [], 'Loading colors...');
+    setDisabled('color', true);
+    document.getElementById('submitBtn').disabled = true;
+
+    if (!floorLine || !buyer || !style) return;
+
+    try {
+      const data = await jsonp('colors', { floorLine, buyer, style });
+      fillSelect('color', data.items, 'Select Color');
+      setDisabled('color', false);
+
+      const count = (data.items || []).length;
+
+      setStatus(
+        'selectionStatus',
+        count === 1
+          ? '1 color found. Select it to load sizes.'
+          : count + ' colors found. Choose the required color.'
+      );
+
+      // If there is only one color, select it automatically.
+      if (count === 1) {
+        document.getElementById('color').value = data.items[0];
+        await loadSizes();
+      }
+    } catch (err) {
+      setStatus('selectionStatus', err.message, 'error');
+    }
+  }
+
+  async function loadSizes() {
+    const floorLine = document.getElementById('floorLine').value;
+    const buyer = document.getElementById('buyer').value;
+    const style = document.getElementById('style').value;
+    const color = document.getElementById('color').value;
+
+    state.sizes = [];
+    renderSizes();
+
+    if (!floorLine || !buyer || !style || !color) return;
+
+    try {
+      setStatus('selectionStatus', 'Loading sizes...');
+
+      const data = await jsonp('sizes', {
+        floorLine,
+        buyer,
+        style,
+        color
+      });
+
+      state.sizes = data.items || [];
+      renderSizes();
+
+      setStatus(
+        'selectionStatus',
+        state.sizes.length
+          ? state.sizes.length + ' size(s) found.'
+          : 'No sizes found for this selection.',
+        state.sizes.length ? '' : 'error'
+      );
+
+    } catch (err) {
+      setStatus('selectionStatus', err.message, 'error');
+    }
+  }
+
+  function renderSizes() {
+    const list = document.getElementById('sizeList');
+    const count = document.getElementById('sizeCount');
+    const meta = document.getElementById('sizeMeta');
+    const submitBtn = document.getElementById('submitBtn');
+
+    list.innerHTML = '';
+
+    count.textContent = state.sizes.length + (state.sizes.length === 1 ? ' size' : ' sizes');
+
+    if (!state.sizes.length) {
+      meta.textContent = 'Choose Color to load sizes.';
+      list.innerHTML = '<div class="empty">No sizes loaded yet.</div>';
+      submitBtn.disabled = true;
+      return;
+    }
+
+    const first = state.sizes[0];
+    meta.textContent =
+      [first.area, first.floor, first.line, first.buyer, first.style, first.color]
+      .filter(Boolean)
+      .join(' • ');
+
+    state.sizes.forEach((item, index) => {
+      const row = document.createElement('div');
+      row.className = 'size-row';
+
+      const size = document.createElement('div');
+      size.className = 'size-pill';
+      size.textContent = item.size;
+
+      const ref = document.createElement('div');
+      ref.className = 'order-ref';
+      ref.innerHTML =
+        '<b>Order Qty:</b> ' + escapeHtml(item.orderQty || '-') +
+        '<br><span class="small-note">1 row will be written to Input for this size.</span>';
+
+      const qtyWrap = document.createElement('div');
+      const input = document.createElement('input');
+      input.type = 'number';
+      input.min = '0';
+      input.step = '1';
+      input.inputMode = 'numeric';
+      input.placeholder = 'Enter quantity';
+      input.dataset.index = String(index);
+      input.className = 'qty';
+
+      qtyWrap.appendChild(input);
+
+      row.appendChild(size);
+      row.appendChild(ref);
+      row.appendChild(qtyWrap);
+
+      list.appendChild(row);
+    });
+
+    submitBtn.disabled = false;
+  }
+
+  function collectRecords() {
+    const floorLine = document.getElementById('floorLine').value;
+    const buyer = document.getElementById('buyer').value;
+    const style = document.getElementById('style').value;
+    const color = document.getElementById('color').value;
+
+    const qtyInputs = Array.from(document.querySelectorAll('.qty'));
+
+    return state.sizes.map((item, index) => {
+      const qty = qtyInputs[index] ? qtyInputs[index].value.trim() : '';
+
+      return {
+        date: todayISO(),
+        area: item.area,
+        floor: item.floor,
+        line: item.line,
+        buyer,
+        style,
+        color,
+        size: item.size,
+        quantity: qty
+      };
+    });
+  }
+
+  function validateRecords(records) {
+    if (!records.length) return 'No sizes selected.';
+
+    const invalid = records.find(r => r.quantity === '' || Number(r.quantity) < 0);
+    if (invalid) {
+      return 'Please enter a quantity for every size.';
+    }
+
+    if (records.some(r => !r.area || !r.floor || !r.line || !r.buyer || !r.style || !r.color || !r.size)) {
+      return 'Some required layout information is missing.';
+    }
+
+    return '';
+  }
+
+  function submitRows() {
+    const records = collectRecords();
+    const error = validateRecords(records);
+
+    if (error) {
+      setStatus('submitStatus', error, 'error');
+      return;
+    }
+
+    if (!SCRIPT_URL || SCRIPT_URL.includes('PASTE_APPS_SCRIPT')) {
+      setStatus('submitStatus', 'Please set SCRIPT_URL in index.html first.', 'error');
+      return;
+    }
+
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    setStatus('submitStatus', 'Submitting ' + records.length + ' row(s)...');
+
+    // Cross-origin POST using a normal HTML form to a hidden iframe.
+    // This avoids browser CORS restrictions on GitHub Pages.
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = SCRIPT_URL;
+    form.target = 'submitFrame';
+    form.style.display = 'none';
+
+    const hidden = document.createElement('input');
+    hidden.type = 'hidden';
+    hidden.name = 'payload';
+    hidden.value = JSON.stringify({ records });
+    form.appendChild(hidden);
+
+    document.body.appendChild(form);
+    form.submit();
+    form.remove();
+
+    // Backend writes to the sheet asynchronously. After a brief delay,
+    // the UI is reset and the user can verify in Submitted Entries.
+    setTimeout(() => {
+      setStatus(
+        'submitStatus',
+        records.length + ' row(s) sent to Google Sheets. Open "Submitted Entries" to verify.',
+        'success'
+      );
+
+      resetForm(false);
+    }, 1400);
+  }
+
+  function resetForm(clearStatus = true) {
+    document.getElementById('floorLine').selectedIndex = 0;
+    fillSelect('buyer', [], 'Select Floor & Line first');
+    fillSelect('style', [], 'Select Buyer first');
+    fillSelect('color', [], 'Select Style first');
+
+    setDisabled('buyer', true);
+    setDisabled('style', true);
+    setDisabled('color', true);
+
+    state.sizes = [];
+    renderSizes();
+
+    if (clearStatus) {
+      setStatus('selectionStatus', 'Form reset.');
+      setStatus('submitStatus', '');
+    }
+
+    document.getElementById('submitBtn').disabled = true;
+  }
+
+  function loadRecentEntries() {
+    setStatus('entryStatus', 'Loading...');
+    jsonp('entries', { limit: 100 })
+      .then(data => {
+        const tbody = document.getElementById('entryBody');
+        tbody.innerHTML = '';
+
+        const rows = data.items || [];
+
+        if (!rows.length) {
+          tbody.innerHTML = '<tr><td colspan="10" class="empty">No entries found.</td></tr>';
+          setStatus('entryStatus', 'No saved rows.');
+          return;
+        }
+
+        rows.forEach(r => {
+          const tr = document.createElement('tr');
+          [
+            r.sl, r.date, r.area, r.floor, r.line,
+            r.buyer, r.style, r.color, r.size, r.quantity
+          ].forEach(v => {
+            const td = document.createElement('td');
+            td.textContent = v ?? '';
+            tr.appendChild(td);
+          });
+          tbody.appendChild(tr);
+        });
+
+        setStatus('entryStatus', 'Showing latest ' + rows.length + ' row(s).', 'success');
+      })
+      .catch(err => {
+        setStatus('entryStatus', err.message, 'error');
+      });
+  }
+
+  function escapeHtml(value) {
+    return String(value ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  // Start app
+  window.addEventListener('DOMContentLoaded', init);
+</script>
+
+</body>
+</html>
